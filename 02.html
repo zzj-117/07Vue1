@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link type="text/css" rel="stylesheet" href="reset.css"/>
+    <style type="text/css">
+        #cartTable{margin:30px auto; border-collapse: collapse;}
+        td,th{padding:5px 10px;}
+        .txtCnt{width:30px; margin:0px 5px;}
+        button{padding:5px;}
+        .total{font-size:18px; color:darkred; font-weight:800;}
+    </style>
+    <script src="vue.js"></script>
+</head>
+<body>
+<div id="cart">
+    <table border="1" cellspacing="0" id="cartTable" >
+        <thead>
+        <tr>
+            <th>商品序号</th>
+            <th>商品编号</th>
+            <th>商品名称</th>
+            <th>商品数量</th>
+            <th>商品单价</th>
+            <th>移出</th>
+        </tr>
+        </thead>
+        <tbody >
+        <tr v-for="(item,index) in list" :key="index" >
+            <td >{{index+1}}</td>
+            <td >{{item.number}}</td>
+            <td >{{item.Pname}}</td>
+            <td><button @click="cartCut(index)"  :disabled="item.count==1" >-</button>
+                <span style="border: 1px solid #ddd;padding: 3px 15px;">{{item.count}}</span>
+                <button @click="cartAdd(index)"> +</button></td>
+            <td >{{item.price}}</td>
+            <td ><button @click="dodDel(index)">删除</button></td>
+
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr v-if="list.length"><!--购物车中有商品时显示-->
+            <td colspan="6">总价为：<span class="total">{{total}}</span>元</td>
+        </tr>
+        <tr v-else><!--购物车中无商品时显示-->
+            <td colspan="6">此购物车中无商品</td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<script>
+    new Vue({
+        el:'#cart',
+        data(){
+            return{
+               list:[{number:'001',Pname:'iphoneX',count:'2',price:'6188'},
+                   {number:'002',Pname:'华为p30',count:'3',price:'5934'},
+                   {number:'003',Pname:'小米RedmiBook',count:'3',price:'4299'},
+                   {number:'004',Pname:'华为畅享9e',count:'1',price:'799'},
+               ],
+                total:0
+            }
+        },
+        methods:{
+            dodDel(index){
+                this.list.splice(index,1);//spalice(index处开始的零个或者多个元素,count 是要删除的项目数量。如果设置为0 ，则不会删除羡慕。如果不设置，则删除从index开始的所有值)
+                this.count();
+            },
+            cartAdd (index) {
+                this.list[index].count++;
+                this.count();
+            },
+            cartCut (index) {
+                if(this.list[index].count==1) return;
+                this.list[index].count--;
+                this.count();
+            }
+
+        },
+
+        computed:{
+        count(){
+             var Tprice=0;
+             this.list.forEach(function (item,index) {
+             Tprice+=item.count*item.price;
+         })
+         this.total=parseFloat(Tprice);
+     }
+        },
+        created(){
+            this.count();
+        }
+
+    })
+</script>
+</body>
+</html>
